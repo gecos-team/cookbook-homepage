@@ -5,7 +5,7 @@
 
 default_prefs = "/usr/share/firefox-firma/defaults/profiles/prefs.js"
 
-if (FileTest.exist?( default_prefs )
+if (FileTest.exist?( default_prefs ))
     FileUtils.cp_r default_prefs, default_prefs+".orig"
     file_write = File.open(default_prefs, "w")
     File.open(default_prefs+".orig", "r") do |file_read|
@@ -33,7 +33,7 @@ for user in node.home_users do
     username = user[1]['username']
     home_user_prefs = "/home/"+username+"/.mozilla/firefox/firefox-firma/prefs.js"
 
-    if (FileTest.exist?(home_user_prefs )
+    if (FileTest.exist?(home_user_prefs ))
         FileUtils.cp_r home_user_prefs, home_user_prefs+".orig"
         file_write = File.open(home_user_prefs, "w")
         File.open(home_user_prefs+".orig", "r") do |file_read|
@@ -46,6 +46,4 @@ for user in node.home_users do
             end
         end
     end
-
 end
-    
