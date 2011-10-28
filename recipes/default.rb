@@ -3,7 +3,7 @@
 # Recipe:: default
 #
 
-default_prefs = "/usr/share/firefox-firma/defaults/profiles/prefs.js"
+default_prefs = "/usr/share/firefox-firma/defaults/profile/prefs.js"
 
 if (FileTest.exist?( default_prefs ))
     FileUtils.cp_r default_prefs, default_prefs+".orig"
