@@ -10,7 +10,7 @@ if (FileTest.exist?( default_prefs ))
     file_write = File.open(default_prefs, "w")
     File.open(default_prefs+".orig", "r") do |file_read|
         while line = file_read.gets
-            if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(p))
+            if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(line))
                 file_write.puts "user_pref(\"browser.startup.homepage\", \""+node.homepage+"\");"
             else
                 file_write.puts line
@@ -38,7 +38,7 @@ for user in node.home_users do
         file_write = File.open(home_user_prefs, "w")
         File.open(home_user_prefs+".orig", "r") do |file_read|
             while line = file_read.gets
-                if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(p))
+                if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(line))
                     file_write.puts "user_pref(\"browser.startup.homepage\", \""+node.homepage+"\");"
                 else
                     file_write.puts line
