@@ -5,45 +5,30 @@
 
 default_prefs = "/usr/share/firefox-firma/defaults/profile/prefs.js"
 
-if (FileTest.exist?( default_prefs ))
-    FileUtils.cp_r default_prefs, default_prefs+".orig"
-    file_write = File.open(default_prefs, "w")
-    File.open(default_prefs+".orig", "r") do |file_read|
-        while line = file_read.gets
-            if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(line))
-                file_write.puts "user_pref(\"browser.startup.homepage\", \""+node.homepage+"\");"
-            else
-                file_write.puts line
-            end
-        end
-    end
-            
-else
-    template default_prefs do
-        owner "root"
-        group "root"
-        mode "0644"
-        variables :homepage => node.homepage
-        source "firefox-prefs.js.erb"
-    end
+def change_homepage_to(file)
+  text = File.open(file).read
+  text.gsub!(/user_pref\(\s*\"browser.startup.homepage\".*/,
+             "user_pref(\"browser.startup.homepage\", \"#{node.homepage}\");")
+  File.open(file, "w") { |file| file.write text }
 end
 
-for user in node.home_users do
+if File.exist? default_prefs
+  change_homepage_to default_prefs
+else
+  template default_prefs do
+    owner "root"
+    group "root"
+    mode "0644"
+    variables :homepage => node.homepage
+    source "firefox-prefs.js.erb"
+  end
+end
 
-    username = user[1]['username']
-    home_user_prefs = "/home/"+username+"/.mozilla/firefox/firefox-firma/prefs.js"
+node.home_users.each do |user|
+  username = user[1]['username']
+  home_user_prefs = "/home/#{username}/.mozilla/firefox/firefox-firma/prefs.js"
 
-    if (FileTest.exist?(home_user_prefs ))
-        FileUtils.cp_r home_user_prefs, home_user_prefs+".orig"
-        file_write = File.open(home_user_prefs, "w")
-        File.open(home_user_prefs+".orig", "r") do |file_read|
-            while line = file_read.gets
-                if (/user_pref\(\s*\"browser.startup.homepage\"\s*\,/.match(line))
-                    file_write.puts "user_pref(\"browser.startup.homepage\", \""+node.homepage+"\");"
-                else
-                    file_write.puts line
-                end
-            end
-        end
-    end
+  if File.exist? home_user_prefs
+    change_homepage_to home_user_prefs
+  end
 end
