@@ -12,7 +12,7 @@ def change_homepage_to(file)
   File.open(file, "w") { |file| file.write text }
 end
 
-if File.exist? default_prefs
+if FileTest.exist? default_prefs
   change_homepage_to default_prefs
 else
   template default_prefs do
@@ -28,7 +28,7 @@ node.home_users.each do |user|
   username = user[1]['username']
   home_user_prefs = "/home/#{username}/.mozilla/firefox/firefox-firma/prefs.js"
 
-  if File.exist? home_user_prefs
+  if FileTest.exist? home_user_prefs
     change_homepage_to home_user_prefs
   end
 end
